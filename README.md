@@ -49,7 +49,7 @@ Every change is classified before it is executed:
 | --- | --- | --- |
 | **0 — Routine** | Bug fix, local implementation, internal refactor without contract changes. | Proceeds within the project rules. |
 | **1 — Relevant, reversible** | Small new dependency, non-sensitive config change, internal module change. | Proceeds only if a previous decision clearly covers it; otherwise asks. |
-| **2 — Structural** | Stack, architecture, database, migrations with impact, public API, authentication, security, deployment, critical integration, recurring cost, scope. | Requires explicit approval before execution. |
+| **2 — Structural** | Stack, architecture, database, data model or migrations with impact, data policy, public API, authentication, security, infrastructure and deployment, critical integration, recurring cost, scope or committed deadline. | Requires explicit approval before execution. |
 
 An approval only counts if it records **who** approved, **when**, **what exactly** (scope and version of the proposal) and **where** it can be verified. Silence, urgency or approval of a different task is not authorization, and a materially changed proposal needs new approval.
 

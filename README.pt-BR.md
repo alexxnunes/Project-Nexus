@@ -51,7 +51,7 @@ Toda mudança é classificada antes de ser executada:
 | --- | --- | --- |
 | **0 — Rotineira** | Correção de bug, implementação local, refatoração interna sem mudar contratos. | Segue dentro das regras do projeto. |
 | **1 — Relevante e reversível** | Dependência pequena nova, configuração não sensível, mudança interna de módulo. | Segue só se uma decisão anterior cobrir claramente; senão, pergunta. |
-| **2 — Estrutural** | Stack, arquitetura, banco, migração com impacto, API pública, autenticação, segurança, deploy, integração crítica, custo recorrente, escopo. | Exige aprovação explícita antes de executar. |
+| **2 — Estrutural** | Stack, arquitetura, banco, modelo de dados ou migração com impacto, política de dados, API pública, autenticação, segurança, infraestrutura e deploy, integração crítica, custo recorrente, escopo ou prazo comprometido. | Exige aprovação explícita antes de executar. |
 
 Uma aprovação só vale se registrar **quem** aprovou, **quando**, **o quê exatamente** (escopo e versão da proposta) e **onde** isso pode ser verificado. Silêncio, urgência ou aprovação de outra tarefa não são autorização, e uma proposta alterada de forma relevante precisa de nova aprovação.
 

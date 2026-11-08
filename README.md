@@ -107,6 +107,7 @@ Permission to document a proposal is not permission to implement it.
 
 ```text
 .
+├── LICENSE                   # MIT
 ├── SKILL.md                  # Entry point: principles, workflows, approval model, completion criteria
 ├── references/               # Loaded on demand for specific tasks
 │   ├── project-discovery.md      # Discovery interview and planning deliverables
@@ -135,3 +136,7 @@ Permission to document a proposal is not permission to implement it.
 ## Origin
 
 Project Nexus started as *Project Guardian*, a skill written in Portuguese. This version is the English translation, with stricter rules for untrusted context, read-only tasks and verifiable approvals.
+
+## License
+
+[MIT](LICENSE)

@@ -1,6 +1,7 @@
 ---
 name: project-nexus
 description: Plans software projects and maintains their technical continuity during development. Use when starting a project, reviewing architecture or stack, recording decisions, assessing risks, preparing handoffs between agents, updating technical documentation, or auditing changes against the approved plan.
+license: MIT
 ---
 
 # Project Nexus

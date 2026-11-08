@@ -109,6 +109,7 @@ Autorização para documentar uma proposta não é autorização para implement�
 
 ```text
 .
+├── LICENSE                   # MIT
 ├── SKILL.md                  # Ponto de entrada: princípios, fluxos, modelo de aprovação, critérios de conclusão
 ├── references/               # Carregados sob demanda em tarefas específicas
 │   ├── project-discovery.md      # Entrevista de descoberta e entregáveis de planejamento
@@ -137,3 +138,7 @@ Autorização para documentar uma proposta não é autorização para implement�
 ## Origem
 
 O Project Nexus começou como *Project Guardian*, uma skill escrita em português. Esta versão é a tradução para o inglês, com regras mais rígidas para contexto não confiável, tarefas somente leitura e aprovações verificáveis.
+
+## Licença
+
+[MIT](LICENSE)

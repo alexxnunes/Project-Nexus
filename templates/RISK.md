@@ -1,7 +1,7 @@
 # RISK-XXX — [scenario]
 
 - Status: open
-- Probability: low | average | high
+- Probability: low | medium | high
 - Impact: low | medium | high
 - Responsible:
 - Latest revision:

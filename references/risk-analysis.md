@@ -20,7 +20,7 @@ Common pitfalls to check for, not assume:
 - external dependency without timeout/retry/limit;
 - absence of idempotence in repeatable operations;
 - excessive permissions;
-- divergence between local environment, approval and production;
+- divergence between local, staging and production environments;
 - incompatible runtime or library version;
 - circular coupling or module with excessive responsibility;
 - lack of observability;

@@ -14,7 +14,7 @@
 ## In progress
 - [...]
 
-## Locks
+## Blockers
 - [...]
 
 ## Next steps

@@ -1,6 +1,6 @@
 # Project: [name]
 
-- Status: discovered | planned | in development | maintenance | paused
+- Status: discovery | planned | in development | maintenance | paused
 - Last update: YYYY-MM-DD
 - Responsible: [person/team]
 

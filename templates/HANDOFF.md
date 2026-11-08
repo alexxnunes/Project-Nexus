@@ -13,7 +13,7 @@
 ## Tests performed and results
 ## What's missing
 ## Applicable decisions
-## Risks, doubts and obstacles
+## Risks, open questions and blockers
 ## Limits: what not to change without approval
 ## Recommended next action
 ## How to validate completion

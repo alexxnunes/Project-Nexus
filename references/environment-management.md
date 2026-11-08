@@ -8,7 +8,7 @@ Document:
 - environment variables by name and purpose, never by secret value;
 - ports, networks and dependencies between services;
 - installation, execution, testing, build and deploy commands;
-- differences between development, testing, approval and production;
+- differences between development, testing, staging and production;
 - backup, restoration, migration and rollback strategy;
 - minimum requirements and known limitations.
 

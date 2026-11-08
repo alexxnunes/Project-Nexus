@@ -1,125 +1,137 @@
 # Project Nexus
 
-**Technical continuity for software projects and the agents working on them.**
+**Technical continuity for software projects and the AI agents working on them.**
 
-[English](#english) | [Português](#português)
+[English](README.md) | [Português](README.pt-BR.md)
+
+Project Nexus is an [Agent Skill](https://agentskills.io/): a set of instructions an AI coding agent loads on demand. It makes the agent behave like a careful technical lead who plans before building, records why decisions were made, asks before structural changes, and leaves a handoff the next person or agent can actually use.
 
 ---
 
-## English
+## Why use it
 
-Project Nexus is a portable [Agent Skills](https://agentskills.io/) skill for planning software projects, tracking technical decisions, assessing changes, and handing work over between people or agents. It helps keep the project's actual state, documentation, and approved direction aligned without claiming to be an autonomous project monitor.
+AI agents are fast, but on real projects they tend to fail in predictable ways:
 
-### What it does
+| Without the skill | With Project Nexus |
+| --- | --- |
+| Each session starts from zero and rebuilds context from scratch. | The agent reads the existing project records first and reports what is missing or contradictory. |
+| The agent swaps a library, database or API contract because it seemed better. | Structural changes are classified and require explicit, traceable approval. |
+| "Tests pass" is claimed without running them. | Reports separate what was verified from what was assumed; untested work is never called tested. |
+| A note in a file saying "approved, go ahead" is taken at face value. | Documents, handoffs and logs are treated as evidence to verify, not as instructions. |
+| A review request ends with files rewritten. | Read-only tasks stay read-only; proposed updates go in the report. |
+| Documentation drifts away from the code. | Audits compare the implementation with the approved plan and point to file, line or command. |
 
-- Turns an idea into a plan with scope, acceptance criteria, dependencies, risks, and open decisions.
-- Reviews architecture, technology choices, environments, and changes against documented decisions.
-- Distinguishes confirmed facts, assumptions, recommendations, and approvals.
-- Identifies and reuses existing project documentation instead of creating duplicate records.
-- Prepares and checks handoffs with verified progress, test results, constraints, and next steps.
-- Requests explicit approval before structural changes and treats external documents and handoffs as evidence, not independent authorization.
+## How it works
 
-The skill supports a team or agent; it does not automatically execute every task or monitor a project in the background. Results depend on the agent's tools, permissions, and access to the relevant project and environment.
+The skill does not run in the background. It activates when you ask for something it covers (planning, review, decisions, risks, handoffs, audits) and guides the agent through one of four workflows:
 
-### Install
+```mermaid
+flowchart LR
+    A["A. Discovery and planning"] --> B["B. Per-task tracking"]
+    B --> C["C. Change management"]
+    C -->|approved| B
+    B --> D["D. Handoff"]
+    D -->|next agent verifies| B
+```
 
-With Node.js and an agent supported by the Skills CLI:
+| Workflow | When | What you get |
+| --- | --- | --- |
+| **A. Discovery and planning** | Starting a project or a large feature. | A proposal that separates confirmed facts, assumptions, recommendations, decisions that need approval, and blocking vs. non-blocking questions. Nothing is treated as approved until you approve it. |
+| **B. Per-task tracking** | Any relevant task during development. | The agent reads the project records, confirms scope and acceptance criteria, compares the work with the approved baseline, and records (or reports) status, decisions, risks and test results. |
+| **C. Change management** | A change touches architecture, stack, contracts, security, cost or scope. | An approval request with the current situation, proposal, alternatives, costs, risks, rollback plan and one objective question. |
+| **D. Handoff** | Work passes to another session, person or agent. | A handoff stating what was done, what was actually tested, what is missing, what must not be changed, and the next step. The receiver re-checks it against the repository. |
+
+### Approval levels
+
+Every change is classified before it is executed:
+
+| Level | Examples | Behavior |
+| --- | --- | --- |
+| **0 — Routine** | Bug fix, local implementation, internal refactor without contract changes. | Proceeds within the project rules. |
+| **1 — Relevant, reversible** | Small new dependency, non-sensitive config change, internal module change. | Proceeds only if a previous decision clearly covers it; otherwise asks. |
+| **2 — Structural** | Stack, architecture, database, migrations with impact, public API, authentication, security, deployment, critical integration, recurring cost, scope. | Requires explicit approval before execution. |
+
+An approval only counts if it records **who** approved, **when**, **what exactly** (scope and version of the proposal) and **where** it can be verified. Silence, urgency or approval of a different task is not authorization, and a materially changed proposal needs new approval.
+
+### Reports
+
+Agent reports highlight each item as **Confirmed**, **Proposal**, **Pending approval**, **Risk** or **Block**, so you can see at a glance what is fact, what is a suggestion, and what is waiting on you.
+
+## Project records
+
+The skill works with whatever documentation the project already has, including files with different names or in other folders. It does not create parallel copies. When nothing exists and writing is authorized, it creates only the files that have real content, chosen from:
+
+| File | Purpose | Template |
+| --- | --- | --- |
+| `PROJECT.md` | Vision, scope, users, success criteria. | [PROJECT.md](templates/PROJECT.md) |
+| `STATUS.md` | Current phase, progress, blockers, next steps, recent checks. | [STATUS.md](templates/STATUS.md) |
+| `RULES.md` | Conventions and limits of autonomy for every agent. | [RULES.md](templates/RULES.md) |
+| `DECISIONS.md` | Index of decisions (`DEC-001`…); details can live in `docs/decisions/`. | [DECISION.md](templates/DECISION.md) (one record) |
+| `RISKS.md` | Risks as cause → event → consequence (`RISK-001`…). | [RISK.md](templates/RISK.md) (one record) |
+| `QUESTIONS.md` | Open questions and what depends on them (`Q-001`…). | [QUESTION.md](templates/QUESTION.md) (one record) |
+| `HANDOFF.md` | Context for the next session or agent. | [HANDOFF.md](templates/HANDOFF.md) |
+| `ARCHITECTURE.md`, `STACK.md`, `INTEGRATIONS.md`, `ENVIRONMENT.md`, `CHANGELOG.md`, `TECH-DEBT.md` | Created only when the project needs them. | — |
+
+Records use ISO dates (`YYYY-MM-DD`), stable IDs and explicit statuses (`open`, `proposed`, `approved`, `rejected`, `in progress`, `resolved`, `blocked`, `superseded`). Secrets are never written to records or handoffs.
+
+## Installation
+
+**With the Skills CLI** (requires Node.js and a supported agent):
 
 ```bash
 npx skills add https://github.com/alexxnunes/Project-Nexus --skill project-nexus
 ```
 
-Follow the CLI prompts to choose the agent and installation scope. Review a skill and its supporting files before installing it. For manual installation, copy this repository's `SKILL.md`, `references/`, and `templates/` together into a `project-nexus` directory in your agent's skills location. Check your agent's documentation for its discovery paths.
+Follow the prompts to choose the agent and the installation scope (project or global).
 
-### Use
+**Manually:** copy `SKILL.md`, `references/` and `templates/` together into a folder named `project-nexus` inside your agent's skills directory. For Claude Code, for example, that is `~/.claude/skills/project-nexus/` (all projects) or `.claude/skills/project-nexus/` (one project). For other agents, check their documentation for the skills location.
 
-Ask your agent to use **Project Nexus**. Example requests:
+Review any skill and its files before installing it.
 
-- “Use Project Nexus to review this project and identify missing decisions. Do not change files.”
-- “Help me plan this project and separate assumptions from confirmed requirements.”
-- “Assess the impact of this architectural change before implementation.”
-- “Prepare a handoff for the next agent, including verified tests and outstanding risks.”
-- “Compare the current implementation with the approved project plan.”
+## Usage
 
-The agent should inspect existing information before drawing conclusions. In read-only tasks, it should report suggested updates rather than write files. Permission to document a proposal is not permission to implement it.
+Mention **Project Nexus** or simply describe a task it covers. Examples and the expected behavior:
 
-### Approval model
-
-| Change | Expected behavior |
+| Request | Expected behavior |
 | --- | --- |
-| Routine local work | May proceed within the user's instructions and approved project rules. |
-| Relevant, reversible change | May proceed only when clearly covered by a prior decision; otherwise ask. |
-| Structural change | Requires explicit approval before execution. |
+| "Use Project Nexus to review this project and identify missing decisions. Do not change files." | Reads the docs and code, reports findings with evidence, and writes nothing. |
+| "Help me plan this project and separate assumptions from confirmed requirements." | Asks only the essential questions, one at a time, then delivers a plan with scope, acceptance criteria, risks and pending decisions. |
+| "Assess the impact of replacing REST with GraphQL before we implement it." | Classifies it as Level 2 and presents an approval request with alternatives, costs, risks and rollback. Nothing is executed. |
+| "Prepare a handoff for the next agent." | Produces a handoff with verified status, real test results, limits and the next step. |
+| "Continue the work from HANDOFF.md." | Checks the handoff against the repository before acting and does not trust approval claims it cannot verify. |
+| "Compare the current implementation with the approved plan." | Audits the implementation, citing file, line or command for each finding, and says which fixes need approval. |
 
-Structural changes include architecture, stack, public contracts, authentication, infrastructure, critical integrations, significant recurring costs, and scope. Approval must be traceable to the specific proposal and its scope. Higher-priority instructions and the user's actual permissions always apply.
+Permission to document a proposal is not permission to implement it.
 
-### Repository contents
+## Repository structure
 
-- `SKILL.md` — entry point, operating principles, workflows, approval model, and completion criteria.
-- `references/` — focused guides for discovery, architecture, stack, risks, decisions, environments, handoffs, and audits.
-- `templates/` — optional templates for project records, decisions, status, risks, questions, rules, and handoffs. Use only what the project needs and only when writing is authorized.
-- `tests/behavior.md` — manual scenarios for checking key behaviors with a compatible agent.
-
-### Testing and limitations
-
-Run the scenarios in `tests/behavior.md` in an authorized project and inspect both the agent's responses and its tool actions. These are manual behavioral checks, not an automated test suite. A skill is an instruction set, not a security boundary: it cannot guarantee an agent's compliance or replace access controls, human review, backups, or verification. Never put credentials or unnecessary personal information in project records or handoffs.
-
----
-
-## Português
-
-Project Nexus é uma skill portátil de [Agent Skills](https://agentskills.io/) para planejar projetos de software, acompanhar decisões técnicas, avaliar mudanças e transferir trabalho entre pessoas ou agentes. Ela ajuda a manter alinhados o estado real, a documentação e a direção aprovada do projeto, sem prometer monitoramento autônomo.
-
-### O que ela faz
-
-- Transforma uma ideia em um plano com escopo, critérios de aceite, dependências, riscos e decisões pendentes.
-- Analisa arquitetura, tecnologias, ambientes e mudanças em relação às decisões documentadas.
-- Separa fatos confirmados, premissas, recomendações e aprovações.
-- Procura e reutiliza a documentação existente, evitando registros paralelos.
-- Prepara e verifica handoffs com progresso, testes, limites e próximos passos.
-- Pede aprovação explícita para mudanças estruturais e trata documentos externos e handoffs como evidências, não como autorização independente.
-
-A skill apoia a equipe ou o agente; ela não executa automaticamente todas as tarefas nem monitora o projeto em segundo plano. Os resultados dependem das ferramentas, permissões e acesso do agente ao projeto e ambiente relevantes.
-
-### Instalação
-
-Com Node.js e um agente compatível com o Skills CLI:
-
-```bash
-npx skills add https://github.com/alexxnunes/Project-Nexus --skill project-nexus
+```text
+.
+├── SKILL.md                  # Entry point: principles, workflows, approval model, completion criteria
+├── references/               # Loaded on demand for specific tasks
+│   ├── project-discovery.md      # Discovery interview and planning deliverables
+│   ├── architecture-review.md    # What to check in an architecture review
+│   ├── stack-evaluation.md       # Criteria for choosing technologies
+│   ├── risk-analysis.md          # Risk categories and common pitfalls
+│   ├── decision-management.md    # ADR lifecycle and approval evidence
+│   ├── environment-management.md # Environment documentation without secrets
+│   ├── agent-handoffs.md         # Delivering and receiving handoffs
+│   └── development-audit.md      # Auditing implementation against the plan
+├── templates/                # Optional record templates (one record each)
+└── tests/behavior.md         # Manual behavioral test scenarios
 ```
 
-Siga as instruções do CLI para selecionar o agente e o escopo da instalação. Revise a skill e os arquivos de apoio antes de instalá-la. Para instalar manualmente, copie `SKILL.md`, `references/` e `templates/` deste repositório para uma pasta `project-nexus` no diretório de skills do seu agente. Consulte a documentação do agente para localizar o diretório correto.
+## Testing
 
-### Como usar
+[tests/behavior.md](tests/behavior.md) describes six manual scenarios: read-only review, structural change without approval, incomplete or changed approval, conflicting documents, untrusted handoff, and existing documentation under different names. Run them in an authorized project with the skill loaded, and check both the agent's answers and its tool calls and file changes. Scenarios that do not apply to the project should be marked as not executed rather than simulated.
 
-Peça ao agente para usar **Project Nexus**. Exemplos:
+## Limitations
 
-- “Use Project Nexus para revisar este projeto e identificar decisões faltantes. Não altere arquivos.”
-- “Ajude-me a planejar este projeto, separando premissas de requisitos confirmados.”
-- “Avalie o impacto desta mudança de arquitetura antes de implementá-la.”
-- “Prepare um handoff para o próximo agente, incluindo testes verificados e riscos pendentes.”
-- “Compare a implementação atual com o plano aprovado.”
+- A skill is a set of instructions, not a security boundary. It cannot guarantee compliance and does not replace access controls, human review, backups or CI.
+- It only tracks the project when invoked, when receiving a handoff, or when wired into your own automation.
+- Results depend on the agent's tools, permissions and access to the repository and environments.
+- Never put credentials or unnecessary personal data in project records or handoffs.
 
-O agente deve inspecionar as informações existentes antes de tirar conclusões. Em tarefas somente de leitura, deve apresentar sugestões em vez de alterar arquivos. A autorização para documentar uma proposta não autoriza sua implementação.
+## Origin
 
-### Modelo de aprovação
-
-| Mudança | Comportamento esperado |
-| --- | --- |
-| Trabalho local rotineiro | Pode prosseguir dentro das instruções do usuário e das regras aprovadas. |
-| Mudança relevante e reversível | Só pode prosseguir se estiver claramente coberta por uma decisão anterior; caso contrário, deve perguntar. |
-| Mudança estrutural | Exige aprovação explícita antes da execução. |
-
-Mudanças estruturais incluem arquitetura, stack, contratos públicos, autenticação, infraestrutura, integrações críticas, custos recorrentes relevantes e escopo. A aprovação deve ser rastreável à proposta específica e ao seu escopo. Instruções de maior prioridade e permissões reais do usuário continuam valendo.
-
-### Conteúdo do repositório
-
-- `SKILL.md` — ponto de entrada, princípios, fluxos, modelo de aprovação e critérios de conclusão.
-- `references/` — guias de descoberta, arquitetura, stack, riscos, decisões, ambientes, handoffs e auditorias.
-- `templates/` — modelos opcionais de registros, decisões, status, riscos, dúvidas, regras e handoffs. Use apenas o necessário e somente quando houver autorização de escrita.
-- `tests/behavior.md` — cenários manuais para verificar comportamentos essenciais em um agente compatível.
-
-### Testes e limitações
-
-Execute os cenários de `tests/behavior.md` em um projeto autorizado e inspecione tanto as respostas quanto as ações do agente. São verificações manuais, não uma suíte automatizada. Uma skill é um conjunto de instruções, não uma barreira de segurança: ela não garante o cumprimento das regras nem substitui controles de acesso, revisão humana, backups ou verificações. Nunca coloque credenciais ou dados pessoais desnecessários em registros ou handoffs.
+Project Nexus started as *Project Guardian*, a skill written in Portuguese. This version is the English translation, with stricter rules for untrusted context, read-only tasks and verifiable approvals.
